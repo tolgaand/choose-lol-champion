@@ -25,26 +25,32 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center">
-      <div className="text-2xl text-center">Which Pokémon is Rounder?</div>
-      <div className="p-2" />
-      <div className="border rounded p-8 flex justify-between items-center max-w-2xl">
-        {!firstPokemon.isLoading &&
-          firstPokemon.data &&
-          !secondPokemon.isLoading &&
-          secondPokemon.data && (
-            <>
-              <PokemonListing
-                pokemon={firstPokemon.data}
-                vote={() => voteForRoundest(first)}
-              />
-              <div className="p-8">Vs</div>
-              <PokemonListing
-                pokemon={secondPokemon.data}
-                vote={() => voteForRoundest(second)}
-              />
-            </>
-          )}
+    <div className="h-screen w-screen flex flex-col justify-center items-center relative">
+      <div className="text-2xl text-center mt-5">Which Pokémon is Rounder?</div>
+      {!firstPokemon.isLoading &&
+        firstPokemon.data &&
+        !secondPokemon.isLoading &&
+        secondPokemon.data && (
+          <div className="border rounded p-8 flex justify-between items-center max-w-2xl">
+            <PokemonListing
+              pokemon={firstPokemon.data}
+              vote={() => voteForRoundest(first)}
+            />
+            <div className="p-8">Vs</div>
+            <PokemonListing
+              pokemon={secondPokemon.data}
+              vote={() => voteForRoundest(second)}
+            />
+          </div>
+        )}
+      <div className="absolute bottom-0 w-full text-xl text-center mb-2">
+        <a
+          href="http://github.com/tolgaand/roundest-pokemon"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Github
+        </a>
       </div>
     </div>
   );
