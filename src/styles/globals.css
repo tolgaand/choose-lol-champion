@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .h-560 {
+    height: 560px;
+  }
+  .w-308 {
+    width: 308px;
+  }
+}
+
 body {
   @apply text-white bg-gray-800;
+  background: url("https://lolstatic-a.akamaihd.net/lolkit/1.1.6/resources/images/bg-default.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }

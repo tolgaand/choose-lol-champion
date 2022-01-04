@@ -1,6 +1,6 @@
-# Roundest - Which Pokémon is most round?
+# Choose Lol Champion
 
-Answering all of life's toughest questions
+Choose dec you think is the strongest among the two champions.
 
 ## Getting Started
 

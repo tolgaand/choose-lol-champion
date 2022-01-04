@@ -1,17 +1,18 @@
 import * as trpc from "@trpc/server";
-import { PokemonClient } from "pokenode-ts";
 
 import { z } from "zod";
 import { prisma } from "@/backend/utils/prisma";
 
 export const appRouter = trpc
   .router()
-  .query("get-pokemon-by-id", {
+  .query("get-champion-by-id", {
     input: z.object({ id: z.number() }),
     async resolve({ input }) {
-      const api = new PokemonClient();
-      const pokemon = await api.getPokemonById(input.id);
-      return { name: pokemon.name, sprites: pokemon.sprites };
+      const champion = prisma.champion.findFirst({ where: { id: input.id } });
+
+      if (!champion) throw new Error("Champion not found");
+
+      return champion;
     },
   })
   .mutation("cast-vote", {
@@ -21,7 +22,10 @@ export const appRouter = trpc
     }),
     async resolve({ input }) {
       const voteInDb = await prisma.vote.create({
-        data: input,
+        data: {
+          votedAgainstId: input.votedAgainst,
+          votedForId: input.votedFor,
+        },
       });
 
       return { success: true, vote: voteInDb };

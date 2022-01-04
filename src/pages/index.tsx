@@ -1,18 +1,20 @@
-import { getOptionsForVote } from "@/utils/getRandomPokemon";
+import { getOptionsForVote } from "@/utils/getRandomChampion";
 import { trpc } from "@/utils/trpc";
 import { inferQueryResponse } from "./api/trpc/[trpc]";
 
 import React, { useState } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   const [ids, updateIds] = useState(() => getOptionsForVote());
 
   const [first, second] = ids;
+  console.log(first, second);
 
-  const firstPokemon = trpc.useQuery(["get-pokemon-by-id", { id: first }]);
-  const secondPokemon = trpc.useQuery(["get-pokemon-by-id", { id: second }]);
+  const firstChampion = trpc.useQuery(["get-champion-by-id", { id: first }]);
+  const secondChampion = trpc.useQuery(["get-champion-by-id", { id: second }]);
 
   const voteMutation = trpc.useMutation(["cast-vote"]);
 
@@ -24,61 +26,61 @@ export default function Home() {
     updateIds(getOptionsForVote());
   };
 
+  const dataLoaded = firstChampion.data && secondChampion.data;
+
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center relative">
-      <div className="text-2xl text-center mt-5">Which Pokémon is Rounder?</div>
-      {!firstPokemon.isLoading &&
-        firstPokemon.data &&
-        !secondPokemon.isLoading &&
-        secondPokemon.data && (
-          <div className="border rounded p-8 flex justify-between items-center max-w-2xl">
-            <PokemonListing
-              pokemon={firstPokemon.data}
-              vote={() => voteForRoundest(first)}
-            />
-            <div className="p-8">Vs</div>
-            <PokemonListing
-              pokemon={secondPokemon.data}
-              vote={() => voteForRoundest(second)}
-            />
-          </div>
-        )}
-      <div className="absolute bottom-0 w-full text-xl text-center mb-2">
+    <div className="h-screen w-screen flex flex-col justify-between items-center relative">
+      <div className="text-2xl text-center mt-5 pt-8">
+        Who deserves the game?
+      </div>
+      {dataLoaded && (
+        <div className="flex justify-between items-center w-auto h-full pt-8">
+          <PokemonListing
+            champion={firstChampion.data}
+            vote={() => voteForRoundest(first)}
+          />
+          <div className=""></div>
+          <PokemonListing
+            champion={secondChampion.data}
+            vote={() => voteForRoundest(second)}
+          />
+        </div>
+      )}
+      {!dataLoaded && <img src="/tail-spin.svg" className="w-48" />}
+      <div className="w-full text-xl text-center mb-2 flex justify-center gap-2">
         <a
-          href="http://github.com/tolgaand/roundest-pokemon"
+          href="http://github.com/tolgaand/roundest-champion"
           target="_blank"
           rel="noopener noreferrer"
         >
           Github
         </a>
+        <Link href="/results">Results</Link>
       </div>
     </div>
   );
 }
 
-type PokemonFromServer = inferQueryResponse<"get-pokemon-by-id">;
+type PokemonFromServer = inferQueryResponse<"get-champion-by-id">;
 
 const PokemonListing: React.FC<{
-  pokemon: PokemonFromServer;
+  champion: PokemonFromServer;
   vote: () => void;
 }> = (props) => {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div
+      className="relative flex flex-col justify-center items-center cursor-pointer h-560 w-308"
+      onClick={() => props.vote()}
+    >
       <Image
-        width={256}
-        height={256}
-        layout="fixed"
-        src={String(props.pokemon.sprites.front_default)}
+        layout="fill"
+        src={String(props.champion?.image)}
+        className="object-cover object-center rounded-3xl champion-image"
       />
-      <div className="text-2xl text-center capitalize mt-[-2rem]">
-        {props.pokemon.name}
+      <div className="absolute text-2xl text-center capitalize mt-2 px-2 champion-text">
+        <p>{props.champion?.name}</p>
+        <p>{props.champion?.title}</p>
       </div>
-      <button
-        onClick={() => props.vote()}
-        className="text-1xl px-6 py-1 border rounded mt-1"
-      >
-        Rounder
-      </button>
     </div>
   );
 };

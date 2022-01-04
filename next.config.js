@@ -1,6 +1,6 @@
 module.exports = {
   images: {
     loader: "default",
-    domains: ["raw.githubusercontent.com"],
+    domains: ["ddragon.leagueoflegends.com"],
   },
 };
