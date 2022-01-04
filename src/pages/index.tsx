@@ -47,14 +47,7 @@ export default function Home() {
         </div>
       )}
       {!dataLoaded && <img src="/tail-spin.svg" className="w-48" />}
-      <div className="w-full text-xl text-center mb-2 flex justify-center gap-2">
-        <a
-          href="http://github.com/tolgaand/roundest-champion"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Github
-        </a>
+      <div className="w-full text-xl text-center mb-2 flex justify-center">
         <Link href="/results">Results</Link>
       </div>
     </div>
