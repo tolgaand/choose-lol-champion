@@ -57,14 +57,23 @@ const ResultsPage: React.FC<{
     <div className="flex flex-col items-center">
       <h2 className="text-2xl p-4">Results</h2>
       <div className="flex flex-col w-full max-w-2xl border">
-        {champion.map((currentChampion, index) => {
-          return (
-            <ChampionListing
-              champion={currentChampion}
-              key={index}
-            ></ChampionListing>
-          );
-        })}
+        {champion
+          .sort((a, b) => {
+            const difference =
+              Number(generateCountPercent(b)) - Number(generateCountPercent(a));
+
+            if (difference === 0) return b._count.VotesFor - a._count.VotesFor;
+
+            return difference;
+          })
+          .map((currentChampion, index) => {
+            return (
+              <ChampionListing
+                champion={currentChampion}
+                key={index}
+              ></ChampionListing>
+            );
+          })}
       </div>
     </div>
   );
