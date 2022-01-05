@@ -33,7 +33,7 @@ const generateCountPercent = (champion: PokemonQueryResult[number]) => {
 
   if (VotesFor + VotesAgainst === 0) return 0;
 
-  return (VotesFor / (VotesFor + VotesAgainst)) * 100;
+  return ((VotesFor / (VotesFor + VotesAgainst)) * 100).toFixed(2);
 };
 
 const PokemonListing: React.FC<{ champion: PokemonQueryResult[number] }> = ({
