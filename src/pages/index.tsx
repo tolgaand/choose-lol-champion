@@ -11,7 +11,6 @@ export default function Home() {
   const [ids, updateIds] = useState(() => getOptionsForVote());
 
   const [first, second] = ids;
-  console.log(first, second);
 
   const firstChampion = trpc.useQuery(["get-champion-by-id", { id: first }]);
   const secondChampion = trpc.useQuery(["get-champion-by-id", { id: second }]);
@@ -35,12 +34,12 @@ export default function Home() {
       </div>
       {dataLoaded && (
         <div className="flex justify-between items-center w-auto h-full pt-8">
-          <PokemonListing
+          <ChampionListing
             champion={firstChampion.data}
             vote={() => voteForRoundest(first)}
           />
           <div className=""></div>
-          <PokemonListing
+          <ChampionListing
             champion={secondChampion.data}
             vote={() => voteForRoundest(second)}
           />
@@ -54,10 +53,10 @@ export default function Home() {
   );
 }
 
-type PokemonFromServer = inferQueryResponse<"get-champion-by-id">;
+type ChampionFromServer = inferQueryResponse<"get-champion-by-id">;
 
-const PokemonListing: React.FC<{
-  champion: PokemonFromServer;
+const ChampionListing: React.FC<{
+  champion: ChampionFromServer;
   vote: () => void;
 }> = (props) => {
   return (

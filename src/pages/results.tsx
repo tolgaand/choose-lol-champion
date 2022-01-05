@@ -4,7 +4,7 @@ import { prisma } from "@/backend/utils/prisma";
 import { AsyncReturnType } from "@/utils/ts-bs";
 import Image from "next/image";
 
-const getPokemonInOrder = async () => {
+const getChampionInOrder = async () => {
   return await prisma.champion.findMany({
     orderBy: {
       VotesFor: {
@@ -27,8 +27,8 @@ const getPokemonInOrder = async () => {
   });
 };
 
-type PokemonQueryResult = AsyncReturnType<typeof getPokemonInOrder>;
-const generateCountPercent = (champion: PokemonQueryResult[number]) => {
+type ChampionQueryResult = AsyncReturnType<typeof getChampionInOrder>;
+const generateCountPercent = (champion: ChampionQueryResult[number]) => {
   const { VotesFor, VotesAgainst } = champion._count;
 
   if (VotesFor + VotesAgainst === 0) return 0;
@@ -36,7 +36,7 @@ const generateCountPercent = (champion: PokemonQueryResult[number]) => {
   return ((VotesFor / (VotesFor + VotesAgainst)) * 100).toFixed(2);
 };
 
-const PokemonListing: React.FC<{ champion: PokemonQueryResult[number] }> = ({
+const ChampionListing: React.FC<{ champion: ChampionQueryResult[number] }> = ({
   champion,
 }) => {
   return (
@@ -51,7 +51,7 @@ const PokemonListing: React.FC<{ champion: PokemonQueryResult[number] }> = ({
 };
 
 const ResultsPage: React.FC<{
-  champion: PokemonQueryResult;
+  champion: ChampionQueryResult;
 }> = ({ champion }) => {
   return (
     <div className="flex flex-col items-center">
@@ -59,10 +59,10 @@ const ResultsPage: React.FC<{
       <div className="flex flex-col w-full max-w-2xl border">
         {champion.map((currentChampion, index) => {
           return (
-            <PokemonListing
+            <ChampionListing
               champion={currentChampion}
               key={index}
-            ></PokemonListing>
+            ></ChampionListing>
           );
         })}
       </div>
@@ -75,7 +75,7 @@ export default ResultsPage;
 export const getStaticProps: GetServerSideProps = async () => {
   return {
     props: {
-      champion: await getPokemonInOrder(),
+      champion: await getChampionInOrder(),
     },
     revalidate: 60,
   };
